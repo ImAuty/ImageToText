@@ -1,0 +1,35 @@
+﻿<Window x:Class="ImageToText.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageToText"
+        mc:Ignorable="d"
+        Title="ImageToText" Height="180" Width="360" MinHeight="180" MinWidth="360" MaxHeight="180" MaxWidth="360">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Name="WhiteStringLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="White String"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Name="WhiteStringTextBox" VerticalAlignment="Center" Margin="5"/>
+        <Label Grid.Row="0" Grid.Column="2" Name="BlackStringLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Black String"/>
+        <TextBox Grid.Row="0" Grid.Column="3" Name="BlackStringTextBox" VerticalAlignment="Center" Margin="5"/>
+        <Label Grid.Row="1" Grid.Column="0" Name="ThresholdLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Threshold"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Name="ThresholdTextBox" VerticalAlignment="Center" Margin="5"/>
+        <Label Grid.Row="1" Grid.Column="2" Name="SeparatorLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Separator"/>
+        <TextBox Grid.Row="1" Grid.Column="3" Name="SeparatorTextBox" VerticalAlignment="Center" Margin="5"/>
+        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" Name="FileOpenLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Name="FileOpenButton" Click="FileOpenButton_Click" Content="File Open"/>
+        <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="ImageToTextButton" Click="ImageToTextButton_Click" Background="LightGreen" Content="Image To Text"/>
+    </Grid>
+</Window>
