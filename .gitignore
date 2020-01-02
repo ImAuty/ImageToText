@@ -1,3 +1,4 @@
 .vs/
 ImageToText/bin/
 ImageToText/obj/
+*.user
