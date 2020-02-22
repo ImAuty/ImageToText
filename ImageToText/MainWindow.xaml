@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageToText"
         mc:Ignorable="d"
-        Title="ImageToText" Height="180" Width="360" MinHeight="180" MinWidth="360" MaxHeight="180" MaxWidth="360">
+        Title="ImageToText" Height="180" Width="360" MinHeight="180" MinWidth="360">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
