@@ -28,7 +28,7 @@ namespace ImageToText
         private const double THRESHOLD = 0.5;
         private const string SEPARATOR = "";
 
-        private string filePath;
+        private string[] filePaths;
 
         public MainWindow()
         {
@@ -42,7 +42,7 @@ namespace ImageToText
 
         private void Initialize()
         {
-            this.filePath = null;
+            this.filePaths = null;
             FileOpenLabel.Content = "画像を選択してください";
             ImageToTextButton.IsEnabled = false;
         }
@@ -51,6 +51,9 @@ namespace ImageToText
         {
             // ダイアログを設定する
             var dialog = new OpenFileDialog { Filter = "Image Files(*.BMP;*.JPG;*.PNG;*.GIF)|*.BMP;*.JPG;*.PNG;*.GIF" };
+
+            // 複数選択を許可する
+            dialog.Multiselect = true;
 
             // ファイル選択ダイアログを表示する
             var result = dialog.ShowDialog();
@@ -62,22 +65,25 @@ namespace ImageToText
             }
 
             // 選択されたファイルのパスを設定
-            this.filePath = dialog.FileName;
+            this.filePaths = dialog.FileNames;
 
             // ファイル名を取得する
-            FileOpenLabel.Content = dialog.FileName.Split('\\').Last().Replace("_", "__");
+            FileOpenLabel.Content = String.Join("\r\n", dialog.FileNames.Select(name => name.Split('\\').Last().Replace("_", "__")));
             ImageToTextButton.IsEnabled = true;
             return;
         }
 
         private void ImageToTextButton_Click(object sender, RoutedEventArgs e)
         {
-            var fileName = this.filePath;
+            var fileNames = this.filePaths;
 
-            if (!File.Exists(fileName))
-            { // ファイルが存在しない場合
-                this.Initialize();
-                return;
+            foreach (var fileName in fileNames)
+            {
+                if (!File.Exists(fileName))
+                { // ファイルが存在しない場合
+                    this.Initialize();
+                    return;
+                }
             }
 
             var whiteString = WHITE_STRING;
@@ -120,19 +126,22 @@ namespace ImageToText
                 SeparatorTextBox.Text = SEPARATOR;
             }
 
-            // Bitmap画像を作成する
-            using (var bitmap = new Bitmap(fileName))
+            foreach (var fileName in fileNames)
             {
-                var bitmapString = Enumerable.Range(0, bitmap.Height).Select(j =>
-                    Enumerable.Range(0, bitmap.Width).Select(i => BitmapUtility.ColorToSpecifiedString(bitmap.GetPixel(i, j), whiteString, blackString, threshold)));
-
-                var windowText = String.Join("\r\n", bitmapString.Select(x => String.Join(separator, x)));
-
-                var subWindow = new SubWindow(windowText)
+                // Bitmap画像を作成する
+                using (var bitmap = new Bitmap(fileName))
                 {
-                    Title = fileName.Split('\\').Last()
-                };
-                subWindow.Show();
+                    var bitmapString = Enumerable.Range(0, bitmap.Height).Select(j =>
+                        Enumerable.Range(0, bitmap.Width).Select(i => BitmapUtility.ColorToSpecifiedString(bitmap.GetPixel(i, j), whiteString, blackString, threshold)));
+
+                    var windowText = String.Join("\r\n", bitmapString.Select(x => String.Join(separator, x)));
+
+                    var subWindow = new SubWindow(windowText)
+                    {
+                        Title = fileName.Split('\\').Last()
+                    };
+                    subWindow.Show();
+                }
             }
         }
     }
