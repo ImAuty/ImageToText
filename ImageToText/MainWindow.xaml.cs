@@ -33,17 +33,17 @@ namespace ImageToText
         public MainWindow()
         {
             InitializeComponent();
-            this.InitializeFileControls(FileOpenLabel, ImagesToTextButton, out this.filePaths);
+            this.InitializeFileControls(FilesOpenTextBox, ImagesToTextButton, ImagesToImageButton, out this.filePaths);
             this.SetTextControls(WhiteStringTextBox, BlackStringTextBox, ThresholdTextBox, SeparatorTextBox);
         }
 
         /// <summary>
-        /// FileOpenのボタンをクリックしたときの処理<br>
+        /// FilesOpenのボタンをクリックしたときの処理<br>
         /// 画像選択ダイアログを表示して、選択された画像のパスを内部に保持する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FileOpenButton_Click(object sender, RoutedEventArgs e)
+        private void FilesOpenButton_Click(object sender, RoutedEventArgs e)
         {
             // ダイアログを設定する
             var dialog = new OpenFileDialog();
@@ -57,16 +57,18 @@ namespace ImageToText
             if (!result.GetValueOrDefault())
             {
                 // ファイルが選択されない場合
-                this.InitializeFileControls(FileOpenLabel, ImagesToTextButton, out this.filePaths);
+                this.InitializeFileControls(FilesOpenTextBox, ImagesToTextButton, ImagesToImageButton, out this.filePaths);
                 return;
             }
 
             // ファイルが選択された場合
             // 選択されたファイルのパスを取得して内部に保持する
             this.filePaths = dialog.FileNames;
+
             // ファイル名を取得して表示する
-            FileOpenLabel.Content = String.Join("\r\n", dialog.FileNames.Select(name => name.Split('\\').Last().Replace("_", "__")));
+            FilesOpenTextBox.Text = string.Join("\r\n", this.filePaths.Select(name => name.Split('\\').Last().Replace("_", "__")));
             ImagesToTextButton.IsEnabled = true;
+            ImagesToImageButton.IsEnabled = true;
             return;
         }
 
@@ -82,7 +84,7 @@ namespace ImageToText
 
             if (fileNames == null)
             {
-                this.InitializeFileControls(FileOpenLabel, ImagesToTextButton, out this.filePaths);
+                this.InitializeFileControls(FilesOpenTextBox, ImagesToTextButton, ImagesToImageButton, out this.filePaths);
                 return;
             }
 
@@ -90,7 +92,7 @@ namespace ImageToText
             {
                 if (!File.Exists(fileName))
                 { // ファイルが存在しない場合
-                    this.InitializeFileControls(FileOpenLabel, ImagesToTextButton, out this.filePaths);
+                    this.InitializeFileControls(FilesOpenTextBox, ImagesToTextButton, ImagesToImageButton, out this.filePaths);
                     return;
                 }
             }
@@ -121,10 +123,95 @@ namespace ImageToText
             }
         }
 
-        private void InitializeFileControls(Label fileOpenLabel, Button imageToTextButton, out string[] filePaths)
+        private void ImagesToImageButton_Click(object sender, RoutedEventArgs e)
         {
-            fileOpenLabel.Content = "画像を選択してください";
-            imageToTextButton.IsEnabled = false;
+            var fileNames = this.filePaths;
+
+            if (fileNames == null)
+            {
+                this.InitializeFileControls(FilesOpenTextBox, ImagesToTextButton, ImagesToImageButton, out this.filePaths);
+                return;
+            }
+
+            foreach (var fileName in fileNames)
+            {
+                if (!File.Exists(fileName))
+                { // ファイルが存在しない場合
+                    this.InitializeFileControls(FilesOpenTextBox, ImagesToTextButton, ImagesToImageButton, out this.filePaths);
+                    return;
+                }
+            }
+
+            // 画像の情報を取得する
+            var bitmaps = new List<Bitmap>();
+            foreach (var fileName in fileNames)
+            {
+                try
+                {
+                    // Bitmap画像を作成する
+                    using (var bitmap = new Bitmap(fileName))
+                    {
+                        bitmaps.Add((Bitmap)bitmap.Clone());
+                    }
+                }
+                catch (Exception)
+                {
+                    bitmaps.ForEach(bitmap => bitmap.Dispose());
+                }
+            }
+
+            try
+            {
+                // 画像を作成する
+                var createImageWidth = bitmaps.Select(bitmap => bitmap.Width).Sum();
+                var createImageHeight = bitmaps.Select(bitmap => bitmap.Height).Max();
+                using (var createImage = new Bitmap(createImageWidth, createImageHeight))
+                {
+                    var beginWidth = 0;
+                    foreach (var bitmap in bitmaps)
+                    {
+                        for (int j = 0; j < bitmap.Height; j++)
+                        {
+                            for (int i = 0; i < bitmap.Width; i++)
+                            {
+                                createImage.SetPixel(beginWidth + i, j, bitmap.GetPixel(i, j));
+                            }
+                        }
+                        beginWidth += bitmap.Width;
+                    }
+
+                    // ダイアログを設定する
+                    var dialog = new SaveFileDialog();
+                    // 画像選択となるようにフィルターを指定する
+                    dialog.Filter = "Image Files(*.BMP)|*.BMP";
+                    // ファイル名を指定する
+                    dialog.FileName = "ImagesToImage.bmp";
+
+                    // ファイル保存ダイアログを表示する
+                    var result = dialog.ShowDialog();
+                    if (!result.GetValueOrDefault())
+                    {
+                        // ファイルが選択されない場合
+                        return;
+                    }
+
+                    // ファイルが選択された場合
+                    var saveFilePath = dialog.FileName;
+                    // 画像を保存する
+                    createImage.Save(saveFilePath);
+                }
+            }
+            finally
+            {
+                bitmaps.ForEach(bitmap => bitmap.Dispose());
+            }
+        }
+
+        private void InitializeFileControls(TextBox filesOpenTextBox, Button imagesToTextButton, Button imagesToImageButton, out string[] filePaths)
+        {
+            filesOpenTextBox.Text = "画像を選択してください";
+            imagesToTextButton.IsEnabled = false;
+            imagesToImageButton.IsEnabled = false;
             filePaths = null;
         }
 
@@ -140,7 +227,7 @@ namespace ImageToText
                 blackStringTextBox.Text = BLACK_STRING;
             }
 
-            if (string.IsNullOrEmpty(thresholdTextBox.Text) || !Double.TryParse(thresholdTextBox.Text, out _))
+            if (string.IsNullOrEmpty(thresholdTextBox.Text) || !double.TryParse(thresholdTextBox.Text, out _))
             {
                 thresholdTextBox.Text = THRESHOLD.ToString();
             }
@@ -156,6 +243,7 @@ namespace ImageToText
     {
         public static string ColorToSpecifiedString(System.Drawing.Color color, string whiteString, string blackString, double threshold)
         {
+            if (color.A == 0) return "　";
             if (threshold >= 1.0) return whiteString;
             if (threshold <= 0.0) return blackString;
 

@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageToText"
         mc:Ignorable="d"
-        Title="ImageToText" Height="180" Width="360" MinHeight="180" MinWidth="360">
+        Title="ImageToText" Height="240" Width="360" MinHeight="240" MinWidth="360">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -28,8 +29,9 @@
         <TextBox Grid.Row="1" Grid.Column="1" Name="ThresholdTextBox" VerticalAlignment="Center" Margin="5"/>
         <Label Grid.Row="1" Grid.Column="2" Name="SeparatorLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Separator"/>
         <TextBox Grid.Row="1" Grid.Column="3" Name="SeparatorTextBox" VerticalAlignment="Center" Margin="5"/>
-        <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" Name="FileOpenLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Name="FileOpenButton" Click="FileOpenButton_Click" Content="File Open"/>
-        <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="ImagesToTextButton" Click="ImagesToTextButton_Click" Background="LightGreen" Content="Image To Text"/>
+        <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" Name="FilesOpenTextBox" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <Button Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="FileOpenButton" Click="FilesOpenButton_Click" Content="Files Open"/>
+        <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="ImagesToTextButton" Click="ImagesToTextButton_Click" Background="LightGreen" Content="Images To Text"/>
+        <Button Grid.Row="4" Grid.Column="2" Grid.ColumnSpan="2" Name="ImagesToImageButton" Click="ImagesToImageButton_Click" Background="LightBlue" Content="Images To Image"/>
     </Grid>
 </Window>
