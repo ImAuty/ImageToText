@@ -30,6 +30,6 @@
         <TextBox Grid.Row="1" Grid.Column="3" Name="SeparatorTextBox" VerticalAlignment="Center" Margin="5"/>
         <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="6" Name="FileOpenLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Name="FileOpenButton" Click="FileOpenButton_Click" Content="File Open"/>
-        <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="ImageToTextButton" Click="ImageToTextButton_Click" Background="LightGreen" Content="Image To Text"/>
+        <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Name="ImagesToTextButton" Click="ImagesToTextButton_Click" Background="LightGreen" Content="Image To Text"/>
     </Grid>
 </Window>
