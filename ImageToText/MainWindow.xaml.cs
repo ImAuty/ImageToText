@@ -133,7 +133,17 @@ namespace ImageToText
                 return;
             }
 
-            foreach (var fileName in fileNames)
+            // 順序を取得する
+            var orderWindow = new OrderWindow(fileNames);
+            var orderResult = orderWindow.ShowDialog();
+            if (!orderResult.GetValueOrDefault())
+            {
+                // ファイルが選択されない場合
+                return;
+            }
+            var orderedFileNames = orderWindow.orderFileNames;
+
+            foreach (var fileName in orderedFileNames)
             {
                 if (!File.Exists(fileName))
                 { // ファイルが存在しない場合
@@ -144,7 +154,7 @@ namespace ImageToText
 
             // 画像の情報を取得する
             var bitmaps = new List<Bitmap>();
-            foreach (var fileName in fileNames)
+            foreach (var fileName in orderedFileNames)
             {
                 try
                 {
